@@ -79,12 +79,6 @@ export class TabGroup {
 
         await tab.init();
 
-        if (this._tabs.length === 1) {
-            const config = TabService.INSTANCE.getAppUIConfig(tab.ID.uuid);
-
-            this._window.updateInitialOptions(config ? config.config : undefined);
-        }
-
         if (this._tabs.length > 1) {
             tab.window.hideWindow();
         } else {

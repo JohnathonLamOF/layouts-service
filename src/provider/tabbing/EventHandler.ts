@@ -40,15 +40,7 @@ export class EventHandler {
             return;
         }
 
-        const foundGroup: TabGroup|undefined = this._service.getTabGroupByApp({uuid, name});
-
-        // Check if this has been called already if it has we dont want to
-        if (foundGroup) {
-            console.error('group has already been created');
-            return;
-        }
-
-        await this._service.addTabGroup(windowOptions);
+        TabService.INSTANCE.addAppUIConfig(uuid, windowOptions);
     }
 
     /**

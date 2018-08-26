@@ -1,5 +1,5 @@
 
-import {Identity} from 'hadouken-js-adapter';
+import {Identity, Application} from 'hadouken-js-adapter';
 
 import {ApplicationUIConfig, Bounds, TabIdentifier, TabPackage, TabWindowOptions} from '../../client/types';
 import {SnapService} from '../snapanddock/SnapService';
@@ -198,14 +198,14 @@ export class TabService {
             if (windowUnderPoint) {
                 if (exclude && exclude.name !== windowUnderPoint.name) {
                     console.time('addTabGroup');
-                    tabGroup = await this.addTabGroup({});
-                    console.timeEnd('addTabGroup');
-                    console.time('init');
-                    await tabGroup.init();
-                    console.timeEnd('init');
-                    console.time('addTab');
-                    await tabGroup.addTab({tabID: windowUnderPoint});
-                    console.timeEnd('addTab');
+                    const appConfigWindowUnderPoint: ApplicationUIConfig | undefined = this.getAppUIConfig(windowUnderPoint.uuid);
+                    const appConfigWindowCurrentlyDragged: ApplicationUIConfig | undefined = this.getAppUIConfig(exclude!.uuid);
+
+                    if (appConfigWindowUnderPoint && appConfigWindowCurrentlyDragged && (appConfigWindowUnderPoint.config.url === appConfigWindowCurrentlyDragged.config.url)) {
+                        tabGroup = await this.addTabGroup({ url: appConfigWindowUnderPoint.config.url, height: appConfigWindowUnderPoint.config.height });
+                        await tabGroup.init();
+                        await tabGroup.addTab({ tabID: windowUnderPoint });
+                    } 
                 }
             }
         } else {
