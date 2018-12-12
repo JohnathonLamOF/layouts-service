@@ -1,0 +1,6 @@
+{
+    "targetfile":"log.txt",
+    "enabled":true,
+    "minlevel": "trace",
+    "toconsole":  true
+}
