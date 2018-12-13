@@ -17,6 +17,7 @@ const windowOptionsBase = {
 export interface CreateWindowData {
     frame: boolean;
     windowCount: number;
+    nativeWindowCount?: number;
     arrangement?: string;
 }
 
@@ -36,7 +37,7 @@ export function createWindowTest<T extends CreateWindowData, C extends WindowCon
 
         // Create all windows
         const windowInitializer = frame ? framedInitializer : framelessInitializer;
-        const windows: Window[] = await windowInitializer.initWindows(windowCount, data.arrangement);
+        const windows: Window[] = await windowInitializer.initWindows(windowCount, data.arrangement, data.nativeWindowCount);
         t.context.windows = windows;
         t.context.windowInitializer = windowInitializer;
 
@@ -46,8 +47,9 @@ export function createWindowTest<T extends CreateWindowData, C extends WindowCon
         try {
             await testFunc(t, data);
         } finally {
-            // Close all windows
-            await Promise.all(windows.map(win => win.close()));
+            // Close all windows.
+            // TODO: Race is called here because close on native windows does not return a promise
+            await Promise.all(windows.map(win => Promise.race([win.close(), delay(1000)])));
             // await delay(500);
         }
     };

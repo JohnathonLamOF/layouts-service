@@ -54,11 +54,16 @@ export class WindowInitializer {
      * @param num Number of windows to create
      * @param arrangementName (optional) Name of the arrangement (from this.Arrangements) to arrange the windows as.
      */
-    public async initWindows(num: number, arrangementName?: string): Promise<Window[]> {
+    public async initWindows(num: number, arrangementName?: string, numberOfNativeWindows?: number): Promise<Window[]> {
         const windows: Window[] = new Array<Window>(num);
-
+        let nativeWindows = numberOfNativeWindows || 0;
         for (let i = 0; i < num; i++) {
-            windows[i] = await createChildWindow({...(this._windowPositions[i]), ...this._windowOptions});
+            if (nativeWindows != 0) {
+                windows[i] = await createChildWindow({ ...(this._windowPositions[i]), ...this._windowOptions }, true);
+                nativeWindows--;
+            } else {
+                windows[i] = await createChildWindow({ ...(this._windowPositions[i]), ...this._windowOptions }, false);
+            }
         }
 
         if (arrangementName) {
@@ -67,7 +72,7 @@ export class WindowInitializer {
 
         // Slight delay to allow things to stablize
         await delay(500);
-
+        console.log(windows.map(w => w.identity));
         return windows;
     }
 

@@ -12,16 +12,25 @@ interface TwoWindowTestOptions extends CreateWindowData {
 
 testParameterized<TwoWindowTestOptions, WindowContext>(
     (testOptions: TwoWindowTestOptions): string => `Basic SnapAndDock - ${testOptions.windowCount} windows - ${testOptions.frame ? 'framed' : 'frameless'} - ${
-        testOptions.side ? `- ${testOptions.side}` : ''}`,
+        testOptions.side ? `- ${testOptions.side}` : ''} - ${testOptions.nativeWindowCount != 0 ? 'native window test' : ''}`,
     [
-        {frame: true, windowCount: 2, side: 'top'},
-        {frame: true, windowCount: 2, side: 'bottom'},
-        {frame: true, windowCount: 2, side: 'left'},
-        {frame: true, windowCount: 2, side: 'right'},
-        {frame: false, windowCount: 2, side: 'top'},
-        {frame: false, windowCount: 2, side: 'bottom'},
-        {frame: false, windowCount: 2, side: 'left'},
-        {frame: false, windowCount: 2, side: 'right'},
+        { frame: true, windowCount: 2, side: 'top', nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, side: 'bottom', nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, side: 'left', nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, side: 'right', nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, side: 'top', nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, side: 'bottom', nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, side: 'left', nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, side: 'right', nativeWindowCount: 1 },
+
+        //{frame: true, windowCount: 2, side: 'top'},
+        //{frame: true, windowCount: 2, side: 'bottom'},
+        //{frame: true, windowCount: 2, side: 'left'},
+        //{frame: true, windowCount: 2, side: 'right'},
+        //{frame: false, windowCount: 2, side: 'top'},
+        //{frame: false, windowCount: 2, side: 'bottom'},
+        //{frame: false, windowCount: 2, side: 'left'},
+        //{ frame: false, windowCount: 2, side: 'right' },
     ],
     createWindowTest(async (t, testOptions: TwoWindowTestOptions) => {
         const windows = t.context.windows;
@@ -44,30 +53,30 @@ testParameterized<TwoWindowTestOptions, WindowContext>(
     }));
 
 
-testParameterized<CreateWindowData, WindowContext>(
-    (testOptions: CreateWindowData): string => `Basic SnapAndDock - ${testOptions.windowCount} windows - ${testOptions.frame}}`,
-    [
-        {frame: true, windowCount: 4},
-        {frame: false, windowCount: 4},
-    ],
-    createWindowTest(async t => {
-        const windows = t.context.windows;
+//testParameterized<CreateWindowData, WindowContext>(
+//    (testOptions: CreateWindowData): string => `Basic SnapAndDock - ${testOptions.windowCount} windows - ${testOptions.frame}}`,
+//    [
+//        {frame: true, windowCount: 4},
+//        {frame: false, windowCount: 4},
+//    ],
+//    createWindowTest(async t => {
+//        const windows = t.context.windows;
 
-        // Snap all four windows together
-        await dragSideToSide(windows[1], 'left', windows[0], 'right');
-        await dragSideToSide(windows[2], 'top', windows[0], 'bottom');
-        await dragSideToSide(windows[3], 'left', windows[2], 'right');
+//        // Snap all four windows together
+//        await dragSideToSide(windows[1], 'left', windows[0], 'right');
+//        await dragSideToSide(windows[2], 'top', windows[0], 'bottom');
+//        await dragSideToSide(windows[3], 'left', windows[2], 'right');
 
-        // Assert snapped and docked
-        await assertGrouped(t, ...windows);
-        await assertAdjacent(t, windows[0], windows[1], 'right');
-        await assertAdjacent(t, windows[0], windows[2], 'bottom');
-        await assertAdjacent(t, windows[2], windows[3], 'right');
+//        // Assert snapped and docked
+//        await assertGrouped(t, ...windows);
+//        await assertAdjacent(t, windows[0], windows[1], 'right');
+//        await assertAdjacent(t, windows[0], windows[2], 'bottom');
+//        await assertAdjacent(t, windows[2], windows[3], 'right');
 
-        // Move windows
-        await dragWindowTo(windows[0], 300, 300);
+//        // Move windows
+//        await dragWindowTo(windows[0], 300, 300);
 
-        // Assert still docked and adjacent
-        await assertGrouped(t, ...windows);
-        await assertSquare(t, ...windows);
-    }));
+//        // Assert still docked and adjacent
+//        await assertGrouped(t, ...windows);
+//        await assertSquare(t, ...windows);
+//    }));

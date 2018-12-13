@@ -1,7 +1,10 @@
-import {Fin} from 'hadouken-js-adapter';
+import {Fin, Identity, Window} from 'hadouken-js-adapter';
 import {_Window} from 'hadouken-js-adapter/out/types/src/api/window/window';
 
 import {getConnection} from './connect';
+import { ChannelClient } from 'hadouken-js-adapter/out/types/src/api/interappbus/channel/client';
+import { ExitCode } from 'hadouken-js-adapter/out/types/src/api/system/external-process';
+import { execFile } from 'child_process';
 
 let childWindowCount = 1;
 
@@ -18,12 +21,55 @@ getConnection().then(fin => {
     });
 });
 
-export const createChildWindow = async (windowOptions: fin.WindowOptions) => {
-    const fin = await getConnection();
-    const client = await getClientConnection();
-    const windowName = 'win' + childWindowCount++;
-    await client.dispatch('createWindow', {...windowOptions, uuid: 'testApp', name: windowName});
+export const createChildWindow = async (windowOptions: fin.WindowOptions, nativeWindow?: boolean) => {
+    const fin: Fin = await getConnection();
+    const client: ChannelClient = await getClientConnection();
+    const windowName: string = 'win' + childWindowCount++;
+    const openfinWindowUuid: string = 'testApp';
+    
 
-    const newWin = fin.Window.wrapSync({uuid: 'testApp', name: windowName});
-    return newWin;
+    if (!nativeWindow) {
+        await client.dispatch('createWindow', { ...windowOptions, uuid: openfinWindowUuid, name: windowName });
+        return fin.Window.wrapSync({ uuid: openfinWindowUuid, name: windowName });;
+    } else {
+        // Create .NET application with hidden helper app.
+        windowOptions.autoShow = false;
+        //const nativeWindowHelperWinName = 'nativeWindowHelperWin' + childWindowCount;
+        //await client.dispatch('createWindow', { ...windowOptions, uuid: openfinWindowUuid, name: nativeWindowHelperWinName });
+        //const nativeWindowHelper: Window = fin.Window.wrapSync({ uuid: openfinWindowUuid, name: nativeWindowHelperWinName });
+        const externalWindowName: string = 'externalWin' + childWindowCount
+
+        const nativeWindow = fin.Window.wrapSync({ uuid: openfinWindowUuid, name: externalWindowName });
+        await launchDotNetApp(externalWindowName, openfinWindowUuid);
+        
+        await sleep(2000);
+
+        return nativeWindow;
+    }
 };
+
+async function launchDotNetApp(externalWindowName: string, nativeWindowHelperAppUuid: string): Promise<Identity> {
+    const fin: Fin = await getConnection();
+    console.log('preparing to launch dotnet application...');
+
+    //const exec = execFile;
+
+    //exec('D:\\Openfin\\JohnathonLamOF\\layouts-service\\res\\test\\dotnet\\WPF.Test.exe', [`${externalWindowName}`, `${nativeWindowHelperAppUuid}`], (error, data) => {
+    //    console.log(error);
+    //    console.log(data.toString());
+    //});
+    //console.log("I have launched the dotnet app")
+    return await fin.System.launchExternalProcess({
+        path: 'D:\\Openfin\\JohnathonLamOF\\layouts-service\\res\\test\\dotnet\\WPF.Test.exe',
+        arguments: `${externalWindowName} ${nativeWindowHelperAppUuid}`,
+        listener: (result: ExitCode) => {
+            console.log('The exit code', result.exitCode)
+        },
+    });
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+}

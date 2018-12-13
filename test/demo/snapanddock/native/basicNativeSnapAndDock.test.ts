@@ -19,21 +19,30 @@ test.before(async () => {
 });
 
 test.afterEach.always(async () => {
-    await openfinWindow.close();
-    await dotnetWindow.close();
-    await nativeWindowHelperApp.close();
     if (anotherDotnetWindow) {
+        console.log("e");
         await anotherDotnetWindow.close();
     }
+
+    console.log(dotnetWindow.identity);
+    dotnetWindow.close();
+
+    console.log("c");
+    await nativeWindowHelperApp.close();
+
+    console.log("a");
+    await openfinWindow.close();
+    
+    
 });
 
 test('Snap and dock a native dotnet window with openfin window', async (assert) => {
     // Arrange
     const externalWindowName: string = "externalWindowName";
 
-    nativeWindowHelperApp = await createChildWindow({ autoShow: false, name: "helperApp" });
+    nativeWindowHelperApp = await createChildWindow({ autoShow: false, name: "helperApp" }, false);
 
-    openfinWindow = await createChildWindow({ autoShow: true, name: 'openfinApp' });
+    openfinWindow = await createChildWindow({ autoShow: true, name: 'openfinApp' }, false);
 
     await launchDotNetApp(externalWindowName, nativeWindowHelperApp.identity.uuid);
 
@@ -57,7 +66,7 @@ test('Snap and dock a native dotnet window to another dotnet window', async (ass
     const externalWindowNameOne = "externalWindowName";
     const externalWindowNameTwo = "externalWindowName2";
 
-    nativeWindowHelperApp = await createChildWindow({ autoShow: false, name: "helperApp" });
+    nativeWindowHelperApp = await createChildWindow({ autoShow: false, name: "helperApp" }, false);
     console.log("creating dot net apps");
     await launchDotNetApp(externalWindowNameOne, nativeWindowHelperApp.identity.uuid),
     await launchDotNetApp(externalWindowNameTwo, nativeWindowHelperApp.identity.uuid)
