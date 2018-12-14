@@ -9,6 +9,7 @@ import {getBounds} from './utils/getBounds';
 import {isInGroup} from './utils/isInGroup';
 import {isOverlappedWith} from './utils/isOverlappedWith';
 import {defaultArrangements, WindowInitializer} from './utils/WindowInitializer';
+import { delay } from './utils/delay';
 
 let windows: Window[] = new Array<Window>();
 let fin: Fin;
@@ -22,7 +23,7 @@ test.afterEach.always(async () => {
     // Closes all windows and resets the array for the next test.
     for (const win of windows) {
         if (win) {
-            await win.close();
+            await Promise.race([win.close(), delay(1000)]);
         }
     }
     windows = new Array<Window>();
@@ -61,7 +62,7 @@ Object.keys(defaultArrangements).forEach(num => {
         test(`${count} windows - ${name}`, async t => {
             // This will spawn the required number of windows in the correct
             // positions/groups
-            windows = await windowInitializer.initWindows(count, name);
+            windows = await windowInitializer.initWindows(count, name, 2);
 
             // Special handling for single window. Checks window did not move in any way
             if (count === 1) {

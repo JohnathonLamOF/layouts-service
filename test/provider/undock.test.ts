@@ -13,6 +13,7 @@ import {getBounds} from './utils/getBounds';
 import {getDistanceBetween} from './utils/getDistanceBetween';
 import {isAdjacentTo} from './utils/isAdjacentTo';
 import {opposite, perpendicular, Side} from './utils/SideUtils';
+import { delay } from './utils/delay';
 
 let windows: Window[] = new Array<Window>();
 let fin: Fin;
@@ -34,16 +35,23 @@ test.before(async () => {
 test.afterEach.always(async () => {
     for (const win of windows) {
         if (win) {
-            await win.close();
+            await Promise.race([win.close(), delay(1000)]);
         }
     }
     windows = new Array<Window>();
 });
 
 
-async function initWindows(t: TestContext, num: number, side?: Side) {
+async function initWindows(t: TestContext, num: number, nativeWindowCount: number, side?: Side) {
+
+    let nativeWindows = nativeWindowCount || 0;
     for (let i = 0; i < num; i++) {
-        windows[i] = await createChildWindow({...(windowPositions[i]), ...windowOptions});
+        if (nativeWindows != 0) {
+            windows[i] = await createChildWindow({ ...(windowPositions[i]), ...windowOptions }, true);
+            nativeWindows--;
+        } else {
+            windows[i] = await createChildWindow({ ...(windowPositions[i]), ...windowOptions }, false);
+        }
     }
 
     if (num === 2 && side) {
@@ -62,10 +70,10 @@ async function initWindows(t: TestContext, num: number, side?: Side) {
 }
 
 test('One ungrouped window - no effect on undock', async t => {
-    await initWindows(t, 1);
+    await initWindows(t, 1, 0);
 
     const boundsBefore = await getBounds(windows[0]);
-
+    
     await undockWindow(windows[0].identity as WindowIdentity);
 
     await new Promise((r) => setTimeout(r, 2000));
@@ -88,7 +96,7 @@ test('One ungrouped window - no effect on undock', async t => {
 function twoWindowTest(side: Side) {
     test('Two windows - undock ' + side, async t => {
         // Spawn and snap two windows
-        await initWindows(t, 2, side);
+        await initWindows(t, 2, 1, side);
 
         // Send and undock message to the service
         await undockWindow(windows[1].identity as WindowIdentity);
@@ -121,7 +129,7 @@ function fourWindowTest(corner: Corner) {
 
     test('Four windows - undock ' + corner, async t => {
         // Spawn and snap 4 windows
-        await initWindows(t, 4);
+        await initWindows(t, 4, 1);
 
         // Gets the window index to be undocked
         const undockedIndex = cornerToWindowMap[corner];

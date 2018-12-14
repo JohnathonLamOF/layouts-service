@@ -58,7 +58,8 @@ test.beforeEach(async () => {
         defaultWidth: 200,
         url: 'http://localhost:1337/demo/popup.html',
         frame: false
-    });
+    },
+    true);
     windows = [win1, win2];
     await delay(1000);
 });
@@ -67,7 +68,7 @@ test.afterEach.always(async () => {
         await win1.close();
     }
     if (win2 && win2.identity) {
-        await win2.close();
+        await Promise.race([win2.close(), delay(1000)]);
     }
     win1 = win2 = {} as Window;
     windows = new Array<Window>();

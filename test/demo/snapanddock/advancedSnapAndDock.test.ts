@@ -9,7 +9,10 @@ import {testParameterized} from '../utils/parameterizedTestUtils';
 // since this just one very specific test
 testParameterized(
     (testOptions: CreateWindowData) => 'Cannot snap windows so they overlap - shape: U',
-    [{windowCount: 5, frame: true}],
+    [
+        {windowCount: 5, frame: true, nativeWindowCount: 1}
+        //{windowCount: 5, frame: true}
+    ],
     createWindowTest(async (t, testOptions: CreateWindowData) => {
         const windows = t.context.windows;
 
@@ -54,7 +57,10 @@ testParameterized(
 
 testParameterized(
     (testOptions: CreateWindowData) => 'Cannot snap windows so they overlap - shape: O',
-    [{windowCount: 5, frame: true}],
+    [
+        //{windowCount: 5, frame: true}
+        { windowCount: 5, frame: true, nativeWindowCount: 1 }
+    ],
     createWindowTest(async (t, testOptions: CreateWindowData) => {
         const windows = t.context.windows;
 

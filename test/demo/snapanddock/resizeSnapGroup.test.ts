@@ -15,28 +15,46 @@ testParameterized(
         `Resize SnapGroup - ${testOptions.windowCount} windows - ${testOptions.frame ? 'framed' : 'frameless'} - ${testOptions.resizeType.join('-')} resize`,
     [
         // These two tests are passing, but for the wrong reasons. Should be revisited once win10 bounds fix is in place.
-        {frame: true, windowCount: 2, resizeType: ['inner', 'horizontal'], skip: true},
-        {frame: true, windowCount: 2, resizeType: ['inner', 'vertical'], skip: true},
-        {frame: true, windowCount: 2, resizeType: ['outer', 'horizontal']},
-        {frame: true, windowCount: 2, resizeType: ['outer', 'vertical']},
-        {frame: true, windowCount: 4, resizeType: ['inner', 'horizontal'], failing: true},
-        {frame: true, windowCount: 4, resizeType: ['inner', 'vertical'], failing: true},
-        {frame: true, windowCount: 4, resizeType: ['outer', 'horizontal']},
-        {frame: true, windowCount: 4, resizeType: ['outer', 'vertical']},
-        {frame: false, windowCount: 2, resizeType: ['inner', 'horizontal']},
-        {frame: false, windowCount: 2, resizeType: ['inner', 'vertical']},
-        {frame: false, windowCount: 2, resizeType: ['outer', 'horizontal']},
-        {frame: false, windowCount: 2, resizeType: ['outer', 'vertical']},
-        {frame: false, windowCount: 4, resizeType: ['inner', 'horizontal']},
-        {frame: false, windowCount: 4, resizeType: ['inner', 'vertical']},
+        { frame: true, windowCount: 2, resizeType: ['inner', 'horizontal'], skip: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeType: ['inner', 'vertical'], skip: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeType: ['outer', 'horizontal'], nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeType: ['outer', 'vertical'], nativeWindowCount: 1 },
+        { frame: true, windowCount: 4, resizeType: ['inner', 'horizontal'], failing: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 4, resizeType: ['inner', 'vertical'], failing: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 4, resizeType: ['outer', 'horizontal'], nativeWindowCount: 1 },
+        { frame: true, windowCount: 4, resizeType: ['outer', 'vertical'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, resizeType: ['inner', 'horizontal'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, resizeType: ['inner', 'vertical'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, resizeType: ['outer', 'horizontal'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, resizeType: ['outer', 'vertical'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 4, resizeType: ['inner', 'horizontal'], nativeWindowCount: 1 },
+        { frame: false, windowCount: 4, resizeType: ['inner', 'vertical'], nativeWindowCount: 1 },
         // Runs fine locally, but consistently fails when running on CI. Needs further investigation:
-        {frame: false, windowCount: 4, resizeType: ['outer', 'horizontal'], skip: true},
-        {frame: false, windowCount: 4, resizeType: ['outer', 'vertical']},
+        { frame: false, windowCount: 4, resizeType: ['outer', 'horizontal'], skip: true, nativeWindowCount: 1 },
+        { frame: false, windowCount: 4, resizeType: ['outer', 'vertical'], nativeWindowCount: 1 },
+        //// These two tests are passing, but for the wrong reasons. Should be revisited once win10 bounds fix is in place.
+        //{frame: true, windowCount: 2, resizeType: ['inner', 'horizontal'], skip: true},
+        //{frame: true, windowCount: 2, resizeType: ['inner', 'vertical'], skip: true},
+        //{frame: true, windowCount: 2, resizeType: ['outer', 'horizontal']},
+        //{frame: true, windowCount: 2, resizeType: ['outer', 'vertical']},
+        //{frame: true, windowCount: 4, resizeType: ['inner', 'horizontal'], failing: true},
+        //{frame: true, windowCount: 4, resizeType: ['inner', 'vertical'], failing: true},
+        //{frame: true, windowCount: 4, resizeType: ['outer', 'horizontal']},
+        //{frame: true, windowCount: 4, resizeType: ['outer', 'vertical']},
+        //{frame: false, windowCount: 2, resizeType: ['inner', 'horizontal']},
+        //{frame: false, windowCount: 2, resizeType: ['inner', 'vertical']},
+        //{frame: false, windowCount: 2, resizeType: ['outer', 'horizontal']},
+        //{frame: false, windowCount: 2, resizeType: ['outer', 'vertical']},
+        //{frame: false, windowCount: 4, resizeType: ['inner', 'horizontal']},
+        //{frame: false, windowCount: 4, resizeType: ['inner', 'vertical']},
+        //// Runs fine locally, but consistently fails when running on CI. Needs further investigation:
+        //{frame: false, windowCount: 4, resizeType: ['outer', 'horizontal'], skip: true},
+        //{frame: false, windowCount: 4, resizeType: ['outer', 'vertical']},
     ],
     createWindowTest(async (t, testOptions: ResizeGroupOptions) => {
         const {resizeType, windowCount} = testOptions;
-        const {windows, windowInitializer} = t.context;
-
+        const { windows, windowInitializer } = t.context;
+        await windows[0].resizeTo(250, 250, 'bottom-right');
         // Create and arrange the windows based on number of windows and resize type
         const arrangementName = windowCount === 2 ? resizeType[1] : 'square';
         await windowInitializer.arrangeWindows(windows, arrangementName);

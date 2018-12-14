@@ -34,15 +34,14 @@ export const createChildWindow = async (windowOptions: fin.WindowOptions, native
     } else {
         // Create .NET application with hidden helper app.
         windowOptions.autoShow = false;
-        //const nativeWindowHelperWinName = 'nativeWindowHelperWin' + childWindowCount;
-        //await client.dispatch('createWindow', { ...windowOptions, uuid: openfinWindowUuid, name: nativeWindowHelperWinName });
-        //const nativeWindowHelper: Window = fin.Window.wrapSync({ uuid: openfinWindowUuid, name: nativeWindowHelperWinName });
         const externalWindowName: string = 'externalWin' + childWindowCount
 
         const nativeWindow = fin.Window.wrapSync({ uuid: openfinWindowUuid, name: externalWindowName });
         await launchDotNetApp(externalWindowName, openfinWindowUuid);
         
         await sleep(2000);
+
+        await nativeWindow.resizeTo(windowOptions.defaultWidth || 250, windowOptions.defaultHeight || 250, 'bottom-right');
 
         return nativeWindow;
     }

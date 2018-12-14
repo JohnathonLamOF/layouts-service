@@ -53,7 +53,7 @@ test.afterEach.always(async () => {
     // Closes all windows and resets the array for the next test.
     for (const win of windows) {
         if (win) {
-            await win.close();
+            await Promise.race([win.close(), delay(1000)]);
         }
     }
     windows = new Array<Window>();
@@ -75,7 +75,7 @@ async function assertAllRestored(t: TestContext) {
 
 test('Basic Minimize', async t => {
     // Spawn two windows grouped side-by-side
-    windows = await windowInitializer.initWindows(2, 'default');
+    windows = await windowInitializer.initWindows(2, 'default', 1);
 
     // Minimize the first window
     await windows[0].minimize();
@@ -89,7 +89,7 @@ test('Basic Minimize', async t => {
 
 test('Basic Minimize and Restore - Restore Same Window', async t => {
     // Spawn two windows grouped side-by-side
-    windows = await windowInitializer.initWindows(2, 'default');
+    windows = await windowInitializer.initWindows(2, 'default', 1);
     // Minimize the first window
     await windows[0].minimize();
     // Wait to make sure the minimize has completed
@@ -106,7 +106,7 @@ test('Basic Minimize and Restore - Restore Same Window', async t => {
 
 test('Basic Minimize and Restore - Restore Other Window', async t => {
     // Spawn two windows grouped side-by-side
-    windows = await windowInitializer.initWindows(2, 'default');
+    windows = await windowInitializer.initWindows(2, 'default', 1);
     // Minimize the first window
     await windows[0].minimize();
     // Wait to make sure the minimize has completed
@@ -125,7 +125,7 @@ test('Basic Minimize and Restore - Restore Other Window', async t => {
 
 test('Three-window Minimize', async t => {
     // Spawn three windows grouped side-by-side
-    windows = await windowInitializer.initWindows(3, 'line');
+    windows = await windowInitializer.initWindows(3, 'line', 2);
     // Minimize the first window
     await windows[0].minimize();
     // Wait to make sure the minimize has completed
@@ -136,7 +136,7 @@ test('Three-window Minimize', async t => {
 
 test('Three-window Minimize and Restore', async t => {
     // Spawn three windows grouped side-by-side
-    windows = await windowInitializer.initWindows(3, 'line');
+    windows = await windowInitializer.initWindows(3, 'line', 2);
     // Minimize the first window
     await windows[0].minimize();
     // Wait to make sure the minimize has completed

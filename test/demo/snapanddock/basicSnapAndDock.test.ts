@@ -14,13 +14,13 @@ testParameterized<TwoWindowTestOptions, WindowContext>(
     (testOptions: TwoWindowTestOptions): string => `Basic SnapAndDock - ${testOptions.windowCount} windows - ${testOptions.frame ? 'framed' : 'frameless'} - ${
         testOptions.side ? `- ${testOptions.side}` : ''} - ${testOptions.nativeWindowCount != 0 ? 'native window test' : ''}`,
     [
-        { frame: true, windowCount: 2, side: 'top', nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, side: 'top', nativeWindowCount: 0 },
         { frame: true, windowCount: 2, side: 'bottom', nativeWindowCount: 1 },
-        { frame: true, windowCount: 2, side: 'left', nativeWindowCount: 1 },
-        { frame: true, windowCount: 2, side: 'right', nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, side: 'left', nativeWindowCount: 2 },
+        { frame: true, windowCount: 2, side: 'right', nativeWindowCount: 0 },
         { frame: false, windowCount: 2, side: 'top', nativeWindowCount: 1 },
-        { frame: false, windowCount: 2, side: 'bottom', nativeWindowCount: 1 },
-        { frame: false, windowCount: 2, side: 'left', nativeWindowCount: 1 },
+        { frame: false, windowCount: 2, side: 'bottom', nativeWindowCount: 2 },
+        { frame: false, windowCount: 2, side: 'left', nativeWindowCount: 0 },
         { frame: false, windowCount: 2, side: 'right', nativeWindowCount: 1 },
 
         //{frame: true, windowCount: 2, side: 'top'},

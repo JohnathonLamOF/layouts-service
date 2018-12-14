@@ -1,10 +1,10 @@
 import {Context, GenericTestContext} from 'ava';
-import {Window} from 'hadouken-js-adapter';
+import {Window, launch} from 'hadouken-js-adapter';
 
 import {delay} from '../../provider/utils/delay';
 import {ArrangementsType, WindowInitializer} from '../../provider/utils/WindowInitializer';
-
-import {TestMacro} from './parameterizedTestUtils';
+import { TestMacro } from './parameterizedTestUtils';
+const execa = require('execa');
 
 const windowOptionsBase = {
     autoShow: true,
@@ -28,6 +28,7 @@ export interface WindowContext {
 
 export function createWindowTest<T extends CreateWindowData, C extends WindowContext = WindowContext>(
     testFunc: TestMacro<T, C>, windowOptions?: fin.WindowOptions, customArrangements?: ArrangementsType): TestMacro<T, C> {
+
     const options: fin.WindowOptions = Object.assign({}, windowOptionsBase, windowOptions);
     const framedInitializer: WindowInitializer = new WindowInitializer(customArrangements, undefined, Object.assign({}, options, {frame: true}));
     const framelessInitializer: WindowInitializer = new WindowInitializer(customArrangements, undefined, Object.assign({}, options, {frame: false}));
@@ -53,4 +54,9 @@ export function createWindowTest<T extends CreateWindowData, C extends WindowCon
             // await delay(500);
         }
     };
+}
+
+export function cleanup(): void {
+    const cmd = 'taskkill /F /IM openfin.exe /T';
+    execa.shellSync(cmd);
 }

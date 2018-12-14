@@ -53,29 +53,123 @@ testParameterized(
         },
     [
         // No constraints. Normal resizing behaviour expected
-        {frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: {}, shouldResize: true},
-        {frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'bottom', constraints: {}, shouldResize: true},
-        {frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'right', constraints: {}, shouldResize: true},
-        {frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: {}, shouldResize: true},
+        //{frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: {}, shouldResize: true},
+        //{frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'bottom', constraints: {}, shouldResize: true},
+        //{frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'right', constraints: {}, shouldResize: true},
+        //{frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: {}, shouldResize: true},
+        //// Resizable false. No resize should occur.
+        //{frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: {resizable: false}, shouldResize: false},
+        //{frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: {resizable: false}, shouldResize: false},
+        //// Constraint in axis of resize.
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'small-to-big',
+        //    side: 'right',
+        //    constraints: {resizeRegion: {sides: {top: false, bottom: false, left: true, right: true}}},
+        //    shouldResize: false
+        //},
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'small-to-big',
+        //    side: 'bottom',
+        //    constraints: {resizeRegion: {sides: {left: false, right: false, top: true, bottom: true}}},
+        //    shouldResize: false
+        //},
+        //// Constraint not in axis of resize
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'right',
+        //    constraints: {resizeRegion: {sides: {left: false, right: false, top: true, bottom: true}}},
+        //    shouldResize: true
+        //},
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'bottom',
+        //    constraints: {resizeRegion: {sides: {top: false, bottom: false, left: true, right: true}}},
+        //    shouldResize: true
+        //},
+        //// Resize region only on perpendicular sides. Same as no constraint.
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'right',
+        //    constraints: {resizeRegion: {sides: {left: false, top: false, right: true, bottom: true}}},
+        //    shouldResize: true
+        //},
+        //// Size constraints
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'right',
+        //    constraints: {minHeight: WINDOW_SIZE + RESIZE_AMOUNT / 2},
+        //    shouldResize: false
+        //},
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'bottom',
+        //    constraints: {minWidth: WINDOW_SIZE + RESIZE_AMOUNT / 2},
+        //    shouldResize: false
+        //},
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'small-to-big',
+        //    side: 'right',
+        //    constraints: {maxHeight: WINDOW_SIZE - RESIZE_AMOUNT / 2},
+        //    shouldResize: false
+        //},
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'small-to-big',
+        //    side: 'bottom',
+        //    constraints: {maxWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2},
+        //    shouldResize: false
+        //},
+        //// Irrelevant size constraint
+        //{
+        //    frame: true,
+        //    windowCount: 2,
+        //    resizeDirection: 'big-to-small',
+        //    side: 'bottom',
+        //    constraints: {minWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2},
+        //    shouldResize: true
+        //},
+        { frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: {}, shouldResize: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'bottom', constraints: {}, shouldResize: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'right', constraints: {}, shouldResize: true, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: {}, shouldResize: true, nativeWindowCount: 1 },
         // Resizable false. No resize should occur.
-        {frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: {resizable: false}, shouldResize: false},
-        {frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: {resizable: false}, shouldResize: false},
+        { frame: true, windowCount: 2, resizeDirection: 'big-to-small', side: 'right', constraints: { resizable: false }, shouldResize: false, nativeWindowCount: 1 },
+        { frame: true, windowCount: 2, resizeDirection: 'small-to-big', side: 'bottom', constraints: { resizable: false }, shouldResize: false, nativeWindowCount: 1 },
         // Constraint in axis of resize.
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'small-to-big',
             side: 'right',
-            constraints: {resizeRegion: {sides: {top: false, bottom: false, left: true, right: true}}},
-            shouldResize: false
+            constraints: { resizeRegion: { sides: { top: false, bottom: false, left: true, right: true } } },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'small-to-big',
             side: 'bottom',
-            constraints: {resizeRegion: {sides: {left: false, right: false, top: true, bottom: true}}},
-            shouldResize: false
+            constraints: { resizeRegion: { sides: { left: false, right: false, top: true, bottom: true } } },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         // Constraint not in axis of resize
         {
@@ -83,16 +177,18 @@ testParameterized(
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'right',
-            constraints: {resizeRegion: {sides: {left: false, right: false, top: true, bottom: true}}},
-            shouldResize: true
+            constraints: { resizeRegion: { sides: { left: false, right: false, top: true, bottom: true } } },
+            shouldResize: true,
+            nativeWindowCount: 1
         },
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'bottom',
-            constraints: {resizeRegion: {sides: {top: false, bottom: false, left: true, right: true}}},
-            shouldResize: true
+            constraints: { resizeRegion: { sides: { top: false, bottom: false, left: true, right: true } } },
+            shouldResize: true,
+            nativeWindowCount: 1
         },
         // Resize region only on perpendicular sides. Same as no constraint.
         {
@@ -100,8 +196,9 @@ testParameterized(
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'right',
-            constraints: {resizeRegion: {sides: {left: false, top: false, right: true, bottom: true}}},
-            shouldResize: true
+            constraints: { resizeRegion: { sides: { left: false, top: false, right: true, bottom: true } } },
+            shouldResize: true,
+            nativeWindowCount: 1
         },
         // Size constraints
         {
@@ -109,32 +206,36 @@ testParameterized(
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'right',
-            constraints: {minHeight: WINDOW_SIZE + RESIZE_AMOUNT / 2},
-            shouldResize: false
+            constraints: { minHeight: WINDOW_SIZE + RESIZE_AMOUNT / 2 },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'bottom',
-            constraints: {minWidth: WINDOW_SIZE + RESIZE_AMOUNT / 2},
-            shouldResize: false
+            constraints: { minWidth: WINDOW_SIZE + RESIZE_AMOUNT / 2 },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'small-to-big',
             side: 'right',
-            constraints: {maxHeight: WINDOW_SIZE - RESIZE_AMOUNT / 2},
-            shouldResize: false
+            constraints: { maxHeight: WINDOW_SIZE - RESIZE_AMOUNT / 2 },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         {
             frame: true,
             windowCount: 2,
             resizeDirection: 'small-to-big',
             side: 'bottom',
-            constraints: {maxWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2},
-            shouldResize: false
+            constraints: { maxWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2 },
+            shouldResize: false,
+            nativeWindowCount: 1
         },
         // Irrelevant size constraint
         {
@@ -142,8 +243,9 @@ testParameterized(
             windowCount: 2,
             resizeDirection: 'big-to-small',
             side: 'bottom',
-            constraints: {minWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2},
-            shouldResize: true
+            constraints: { minWidth: WINDOW_SIZE - RESIZE_AMOUNT / 2 },
+            shouldResize: true,
+            nativeWindowCount: 1
         },
     ],
     createWindowTest(async (t, testOptions: ResizeWithConstrainsOptions) => {
@@ -151,6 +253,7 @@ testParameterized(
         const windows = t.context.windows;
 
         // Resize the second window based on the test params
+        await windows[0].resizeTo(250, 250, 'bottom-right');
         if (resizeDirection === 'big-to-small') {
             await windows[1].resizeBy(RESIZE_AMOUNT, RESIZE_AMOUNT, 'top-left');
         } else {

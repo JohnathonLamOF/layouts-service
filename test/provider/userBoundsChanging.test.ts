@@ -25,7 +25,7 @@ test.beforeEach(async () => {
         defaultWidth: 200,
         url: 'http://localhost:1337/demo/popup.html',
         frame: false
-    });
+    }, true);
     wins[1] = await createChildWindow({
         autoShow: true,
         saveWindowState: false,
@@ -35,7 +35,7 @@ test.beforeEach(async () => {
         defaultWidth: 200,
         url: 'http://localhost:1337/demo/tabbing/App/default.html',
         frame: true
-    });
+    }, false);
     await delay(500);
 });
 
@@ -43,7 +43,7 @@ test.afterEach.always(async () => {
     // Try and close all the windows.  If the window is already closed then it will throw an error which we catch and ignore.
     await Promise.all(wins.map(win => {
         try {
-            return win.close();
+            return Promise.race([win.close(), delay(1000)]);
         } catch (e) {
             return;
         }

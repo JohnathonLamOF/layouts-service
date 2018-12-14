@@ -1,5 +1,5 @@
 import {test} from 'ava';
-import {Fin, Window} from 'hadouken-js-adapter';
+import {Fin, Window, Identity} from 'hadouken-js-adapter';
 import * as robot from 'robotjs';
 
 import {assertNotTabbed, assertTabbed} from './utils/assertions';
@@ -9,6 +9,7 @@ import {delay} from './utils/delay';
 import {dragWindowToOtherWindow} from './utils/dragWindowTo';
 import {getBounds} from './utils/getBounds';
 import {tabWindowsTogether} from './utils/tabWindowsTogether';
+import { ExitCode } from 'hadouken-js-adapter/out/types/src/api/system/external-process';
 
 let fin: Fin;
 
@@ -37,8 +38,8 @@ test.beforeEach(async () => {
         defaultHeight: 200,
         defaultWidth: 200,
         url: 'http://localhost:1337/demo/tabbing/App/default.html',
-        frame: true
-    });
+        frame: true,
+    }, true);
     await delay(500);
 });
 
@@ -46,7 +47,7 @@ test.afterEach.always(async () => {
     // Try and close all the windows.  If the window is already closed then it will throw an error which we catch and ignore.
     await Promise.all(wins.map(win => {
         try {
-            return win.close();
+            return Promise.race([win.close(), delay(1000)]);
         } catch (e) {
             return;
         }
@@ -474,3 +475,20 @@ test('Tearout tab onto itself - should remain in tabgroup', async t => {
 
     await delay(1000);
 });
+
+test('Tab native window with openfin window', async t => {
+    const externalWindowName: string = "someexternalwindow";
+    await launchDotNetApp(externalWindowName, wins[0].identity.uuid);
+
+    const dotnetWindow: Window = fin.Window.wrapSync({ uuid: externalWindowName, name: externalWindowName });
+});
+
+async function launchDotNetApp(externalWindowName: string, nativeWindowHelperAppUuid: string): Promise<Identity> {
+    return await fin.System.launchExternalProcess({
+        path: 'D:\\Openfin\\JohnathonLamOF\\layouts-service\\res\\test\\dotnet\\WPF.Test.exe',
+        arguments: `${externalWindowName} ${nativeWindowHelperAppUuid}`,
+        listener: (result: ExitCode) => {
+            console.log('The exit code', result.exitCode)
+        },
+    });
+}
