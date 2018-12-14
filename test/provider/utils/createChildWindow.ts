@@ -58,8 +58,11 @@ async function launchDotNetApp(externalWindowName: string, nativeWindowHelperApp
     //    console.log(data.toString());
     //});
     //console.log("I have launched the dotnet app")
+    const wpfExecutable: string = process.cwd() + '\\res\\test\\dotnet\\WPF.Test.exe';
+    console.log(wpfExecutable);
+
     return await fin.System.launchExternalProcess({
-        path: 'D:\\Openfin\\JohnathonLamOF\\layouts-service\\res\\test\\dotnet\\WPF.Test.exe',
+        path: wpfExecutable,
         arguments: `${externalWindowName} ${nativeWindowHelperAppUuid}`,
         listener: (result: ExitCode) => {
             console.log('The exit code', result.exitCode)
